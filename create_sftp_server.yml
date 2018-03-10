@@ -21,12 +21,12 @@
       - {name: /var/sftp/fails}
       - {name: /var/sftp/success}
       - {name: /var/sftp/files}
-#    - name: SFTP-Server | Alter sftp subsystem entry
-#      lineinfile:
-#        dest: /etc/ssh/sshd_config
-#        regexp: '^#Subsystem'
-#        line: "Subsystem sftp internal-sftp"
-#        state: present
+    - name: SFTP-Server | Alter sftp subsystem entry
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#Subsystem'
+        line: "Subsystem sftp internal-sftp"
+        state: present
     - name: SFTP-Server | Add sshd_config block
       blockinfile:
         dest: /etc/ssh/sshd_config
