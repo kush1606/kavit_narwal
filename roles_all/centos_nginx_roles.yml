@@ -1,0 +1,4 @@
+---
+- hosts: 192.168.33.10
+  roles:
+     - nginx_new/for_centos
