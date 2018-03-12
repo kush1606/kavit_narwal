@@ -1,0 +1,6 @@
+- apt: name={{item.name}} state=present
+  with_items:
+  - { name: update }
+  - { name: default-jre }
+  - { name: openjdk-7-jre }
+  ignore_errors: yes

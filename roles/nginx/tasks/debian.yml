@@ -1,0 +1,11 @@
+- apt:
+    name: "nginx"
+    state: present
+  ignore_errors: yes
+- template:
+    src: nginx_conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx
