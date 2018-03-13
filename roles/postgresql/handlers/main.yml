@@ -1,0 +1,7 @@
+---
+# handlers file for mysql
+- name: restart postgresql
+  service: 
+    name: postgresql
+    state: restarted
+

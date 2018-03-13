@@ -1,0 +1,7 @@
+- yum: name={{ item.name }} state=present
+  with_items:
+  - { name: postgresql-server }
+  - { name: postgresql-contrib }
+
+- shell:
+    postgresql-setup initdb
