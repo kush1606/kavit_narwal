@@ -1,0 +1,38 @@
+---
+
+#- name: upgrade all packages
+#  yum:
+#    name: '*'
+#    state: latest
+
+- name: install the nginx rpm from a remote repo
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+
+
+- name: Installing libpam-google-authenticator ...
+  yum: name=google-authenticator state=installed
+
+- name: run google authenticator command
+  shell: yes  | google-authenticator
+  register: prompt
+
+- debug:
+    var: prompt.stdout_lines
+
+- name: Update sshd file
+  lineinfile:
+    path: /etc/pam.d/sshd
+    backup: yes
+    line: 'auth required pam_google_authenticator.so'
+    insertafter: EOF
+
+- name: Update sshd_config file
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    backup: yes
+    regexp: '^ChallengeResponseAuthentication '
+    insertafter: '^ChallengeResponseAuthentication '
+    line: 'ChallengeResponseAuthentication yes'
+  notify: Restart sshd service

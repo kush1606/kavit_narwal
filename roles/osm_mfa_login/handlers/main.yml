@@ -1,0 +1,6 @@
+---
+# handlers file for osm_mfa_login
+
+- name: Restart sshd service
+  service: name=sshd state=restarted
+
