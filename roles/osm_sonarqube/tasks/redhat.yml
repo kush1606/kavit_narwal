@@ -1,0 +1,57 @@
+---
+- name: Install Oracle Java 8 JDK
+  shell: wget http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.rpm
+- shell: rpm -ivh jdk-8u102-linux-x64.rpm
+  tags: install_java
+
+- name: Downloading rpm for mysql
+  get_url: url=http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm dest=/root/
+
+- name: Installing repo
+  command: rpm -Uvh mysql-community-release-el6-5.noarch.rpm chdir=/root/ warn=no
+  ignore_errors: yes
+
+- name: Installing mysql server
+  yum: name={{item}} state=latest update_cache=yes
+  with_items:
+      - mysql
+      - mysql-server
+      - MySQL-python
+      - libselinux-python
+
+- name: Enabling mysql
+  command: chkconfig mysqld on
+
+- name: Starting mysql
+  service: name=mysqld state=restarted
+
+- name: Mysql secure installation
+  include: mysql_secure_installation.yml
+
+- name: create database & user for SonarQube
+  block:
+    - mysql_db:
+        name: "{{ dbname }}"
+        state: present
+    - mysql_user:
+        name: "{{dbusername}}"
+        password: "{{ dbuserpassword }}"
+        priv: '{{dbname}}.*:ALL'
+        state: present
+  tags: create_user
+
+- name: Setup Sonarcube Web Server
+  block:
+    - unarchive: 
+        src: https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.5.zip
+        dest: /opt
+    - copy:
+        src: /opt/sonarqube-6.5
+        dest: /opt/sonarqube
+        remote_src: True
+    - template:
+        src: sonar.properties.j2
+        dest: /opt/sonarqube/conf/sonar.properties
+    - script: /opt/sonarqube/bin/linux-x86-64/sonar.sh start 
+
+           

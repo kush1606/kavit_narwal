@@ -1,0 +1,45 @@
+---
+- name: Install Oracle Java 8 JDK
+  shell: add-apt-repository ppa:webupd8team/java
+- shell: apt-get update
+- apt:
+   name: oracle-java8-installer
+   state: present 
+  tags: install_java
+
+- name: Installing mysql server
+  apt: name=mysql-server state=latest
+  ignore_errors: yes
+- name: Starting mysql
+  service: name=mysqld state=restarted
+  ignore_errors: yes
+- name: Mysql secure installation
+  include: mysql_secure_installation.yml
+
+- name: create database & user for SonarQube
+  block:
+    - mysql_db:
+        name: "{{ dbname }}"
+        state: present
+    - mysql_user:
+        name: "{{dbusername}}"
+        password: "{{ dbuserpassword }}"
+        priv: '{{dbname}}.*:ALL'
+        state: present
+  tags: create_user
+
+- name: Setup Sonarcube Web Server
+  block:
+    - unarchive: 
+        src: https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.5.zip
+        dest: /opt
+    - copy:
+        src: /opt/sonarqube-6.5
+        dest: /opt/sonarqube
+        remote_src: True
+    - template:
+        src: sonar.properties.j2
+        dest: /opt/sonarqube/conf/sonar.properties
+    - script: /opt/sonarqube/bin/linux-x86-64/sonar.sh start 
+
+           

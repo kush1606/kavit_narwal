@@ -1,0 +1,9 @@
+# handlers file for sonarqube
+
+- name: start_mysql
+  service: 
+    name: mysqld
+    state: restarted
+    enabled: yes
+  tags: start_service
+

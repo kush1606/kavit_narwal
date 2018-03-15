@@ -1,0 +1,7 @@
+---
+# vars file for lamp
+#
+  mysql_root_pass: Secure@148
+  dbname: sonarqube
+  dbuserpassword: leo.1aug
+  dbusername: sonarqube
