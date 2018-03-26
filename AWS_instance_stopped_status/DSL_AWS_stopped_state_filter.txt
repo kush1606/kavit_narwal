@@ -1,0 +1,15 @@
+freeStyleJob('AWS_stopped_state_filter_with_parameter') {
+   parameters {
+stringParam('DATE', '', 'give date')
+stringParam('NUM_DAYS', '', 'give number of days')
+}
+    steps {
+  shell {
+command('''\
+#!/bin/bash
+sh -x /root/kavit_scripts/aws_instance_status.sh "$DATE" "$NUM_DAYS" 
+sh -x /root/kavit_scripts/NEW_aws_instance_details_html.sh
+'''.stripIndent()) 
+}
+  }
+}
