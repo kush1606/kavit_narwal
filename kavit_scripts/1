@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#echo "hello "$1
+
+var="Kavit"
+
+if [ $var = "Kavit" ]
+then
+echo "pass"
+
+else 
+
+echo "fail"
+fi
